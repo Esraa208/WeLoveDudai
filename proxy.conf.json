@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://testapi.shipsync.it.com",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,669 @@
+// ============================================================
+//  _components.scss  —  Reusable UI building blocks
+//  Dubai We Love You · Design System v1.0
+// ============================================================
+
+@use '../abstracts/mixins' as *;
+
+
+// ════════════════════════════════════════════════════════════
+//  BUTTONS
+// ════════════════════════════════════════════════════════════
+
+// ── Primary CTA (full-width, red) ────────────────────────────────────────────
+
+.action-btn {
+  @include btn-reset;
+  @include press-feedback(0.97);
+
+  width: 100%;
+  height: var(--action-btn-h);
+  border-radius: var(--radius-md);
+
+  // Flex centering for text + spinner
+  @include flex-row(center, center, var(--space-2));
+
+  // Typography
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+
+  // Default red variant
+  background: var(--color-accent);
+  box-shadow: var(--shadow-btn);
+
+  // Disabled state
+  &[disabled],
+  &.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Outline / secondary variant
+.action-btn--outline {
+  background: transparent;
+  border: 1.5px solid var(--color-accent);
+  color: var(--color-accent);
+  box-shadow: none;
+}
+
+// Dark surface variant (e.g., Share button)
+.action-btn--dark {
+  background: #1e2025;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+  color: var(--color-text-primary);
+}
+
+// Constrained width (used inside .bottom-action)
+.action-btn--constrained {
+  max-width: 294px;
+}
+
+
+// ── Icon Buttons (Retake / Confirm) ──────────────────────────────────────────
+
+.icon-btn {
+  @include btn-reset;
+  @include press-feedback(0.95);
+  @include flex-row(center, center);
+
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+
+  // Remove default browser button appearance
+  appearance: none;
+  margin-top: 15px;
+
+  img,
+  svg {
+    display: block;
+    pointer-events: none;
+  }
+}
+
+.icon-btn--dark {
+  background: var(--color-icon-bg);
+}
+
+.icon-btn--success {
+  background: var(--color-success-alt);
+}
+
+// Disabled visual state
+.icon-btn--disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+// Wrapper that stacks icon + label vertically
+.icon-btn-wrap {
+  @include flex-col(center, center, var(--space-2));
+}
+
+.icon-btn-label {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  &--muted {
+    color: var(--color-text-dim);
+  }
+
+  &--success {
+    color: var(--color-success);
+  }
+}
+
+
+// ── Capture Button (large circle, camera trigger) ────────────────────────────
+
+.capture-btn {
+  @include btn-reset;
+  @include press-feedback(0.95);
+
+  // width: var(--capture-btn-sz);
+  // height: var(--capture-btn-sz);
+  // border-radius: var(--radius-pill);
+  // background: var(--color-accent);
+  // @include flex-row(center, center);
+  // box-shadow: var(--shadow-capture);
+  // flex-shrink: 0;
+
+  img,
+  svg {
+    display: block;
+    pointer-events: none;
+    // width: 100%;
+    // height: 100%;
+    object-fit: contain;
+  }
+
+  // &:active {
+  //   box-shadow: var(--shadow-capture-active);
+  // }
+}
+
+// Bottom action row containing [retake] [capture] [confirm]
+.capture-actions {
+  width: 100%;
+  // @include flex-row(space-between, flex-end);
+  @include flex-row(space-between, center);
+  // margin-top: 10vh;
+  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom, var(--space-3)));
+  flex-shrink: 0;
+}
+
+
+// ── Menu Button (topbar) ─────────────────────────────────────────────────────
+
+.menu-btn {
+  @include btn-reset;
+  color: var(--color-text-primary);
+  font-size: 1.35rem;
+  opacity: 0.8;
+  padding: var(--space-1);
+  transition: opacity var(--t-fast);
+
+  &:active {
+    opacity: 0.5;
+  }
+}
+
+
+// ── CSS Spinner ───────────────────────────────────────────────────────────────
+
+.spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  MEDIA FRAMES
+// ════════════════════════════════════════════════════════════
+//
+//  Usage pattern:
+//    <div class="frame frame--oval">          ← container (dashed border)
+//      <video class="frame__media frame__media--mirror"></video>   ← live feed
+//      <img   class="frame__media"></img>     ← captured still / selfie
+//      <div   class="frame__placeholder"></div>  ← empty state
+//    </div>
+//
+//  Note: For FIXED screens, use clamp() heights so frames don't overflow.
+//        For SCROLL screens, fixed pixel heights are fine.
+
+// ── Base Frame ───────────────────────────────────────────────────────────────
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border: 2px dashed var(--color-frame-border);
+  flex-shrink: 0;
+  @include flex-row(center, center);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+// ── Shape Variants ────────────────────────────────────────────────────────────
+
+// Oval / pill — selfie capture page
+.frame--oval {
+  width: 280px;
+  height: clamp(280px, 45vh, 360px);
+  border-radius: var(--radius-oval);
+}
+
+// Rounded rectangle — confirmation / result pages
+.frame--rect {
+  width: 280px;
+  height: clamp(280px, 45vh, 360px);
+  border-radius: var(--radius-lg);
+}
+
+// Square — generic
+.frame--square {
+  width: 280px;
+  height: 280px;
+  border-radius: var(--radius-md);
+}
+
+// Photo card frame (result page — narrower aspect)
+.frame--card {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(140deg, #171b22, #313744);
+
+  // 3:4-ish portrait aspect ratio
+  &::before {
+    content: '';
+    display: block;
+    padding-top: 93.33%; // 280/300 ≈ height:280, width:300
+  }
+}
+
+
+// ── Media Fill ────────────────────────────────────────────────────────────────
+//  Any <img>, <video>, or <canvas> placed inside .frame
+
+.frame__media {
+  @include media-fill;
+}
+
+// Mirror — live camera feed (front-facing)
+.frame__media--mirror {
+  transform: scaleX(-1);
+}
+
+// Hidden — toggle class to hide video when photo is taken
+.frame__media--hidden {
+  display: none;
+}
+
+
+// ── Empty Placeholder ────────────────────────────────────────────────────────
+
+.frame__placeholder {
+  @include cover;
+  @include glass;
+  border-radius: inherit;
+}
+
+
+// ── Overlay Badge (LIVE FROM DUBAI) ──────────────────────────────────────────
+
+.frame__badge {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: var(--z-badge);
+
+  @include flex-row(flex-start, center, var(--space-2));
+  padding: 8px 16px;
+  height: 33px;
+  border-radius: var(--radius-badge);
+  background: var(--color-badge-bg);
+  @include frosted(20px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.frame__badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent-muted);
+  flex-shrink: 0;
+}
+
+
+// ─── Camera Error State ──────────────────────────────────────────────────────
+
+.frame__error,
+.camera-error {
+  @include cover;
+  @include flex-col(center, center, var(--space-3));
+  padding: var(--space-6);
+  text-align: center;
+  color: var(--color-accent);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: var(--lh-normal);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+.hidden-canvas {
+  display: none;
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  PROGRESS BAR
+// ════════════════════════════════════════════════════════════
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-progress-track);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-progress);
+  backdrop-filter: blur(8px);
+  // Initial animation when the fill appears
+  animation: progress-in 1.2s ease-out forwards;
+  transform-origin: left center;
+}
+
+@keyframes progress-in {
+  from {
+    width: 0 !important;
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  STATS ROW
+// ════════════════════════════════════════════════════════════
+
+.stats {
+  @include flex-row(space-between, center);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.stats__item {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-success);
+}
+
+.stats__item--live {
+  @include flex-row(flex-start, center, 0.45rem);
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  PULSE DOT  (live indicator)
+// ════════════════════════════════════════════════════════════
+
+.pulse-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  HERO / PORTRAITS BLOCK  (Welcome page inline block)
+// ════════════════════════════════════════════════════════════
+
+.hero-block {
+  width: 100%;
+  @include flex-col(flex-start, stretch, var(--space-3));
+  flex-shrink: 0;
+}
+
+.hero-block__img {
+  width: 100%;
+  height: clamp(100px, 20vh, 174px);
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(92, 63, 62, 0.10);
+  padding: 4px;
+  background: var(--color-bg-surface-alt);
+  display: block;
+  flex-shrink: 0;
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  LOOK-UP ANIMATION  (Lookup page center element)
+// ════════════════════════════════════════════════════════════
+
+.look-up-anim {
+  @include flex-col(center, center, var(--space-8));
+  // flex: 1;
+  min-height: 0;
+}
+
+// Chevron arrow group
+.chevrons {
+  @include flex-col(center, center);
+}
+
+.chevron {
+  width: 20px;
+  height: 20px;
+  border-left: 4px solid var(--color-accent);
+  border-top: 4px solid var(--color-accent);
+  transform: translateY(0) rotate(45deg);
+  margin-bottom: -8px;
+  animation: chevron-pulse 1.5s infinite;
+  opacity: 0;
+
+  &:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+}
+
+@keyframes chevron-pulse {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) rotate(45deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(0) rotate(45deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) rotate(45deg);
+  }
+}
+
+// Heart glow badge
+.heart-badge {
+  width: clamp(5rem, 15vh, 7rem);
+  height: clamp(5rem, 15vh, 7rem);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-surface);
+  color: #ff4f5f;
+  @include grid-center;
+  @include glow(rgba(255, 79, 95, 0.4), 45px);
+  animation: heart-glow 2s infinite alternate ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+
+  svg {
+    animation: heart-beat 1s infinite alternate;
+  }
+}
+
+@keyframes heart-glow {
+  0% {
+    box-shadow: 0 0 30px rgba(255, 79, 95, 0.2);
+    transform: scale(0.98);
+  }
+
+  100% {
+    box-shadow: 0 0 65px rgba(255, 79, 95, 0.7);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes heart-beat {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  PHOTO CARD  (Result page)
+// ════════════════════════════════════════════════════════════
+
+.photo-card {
+  width: 300px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-xl);
+  @include flex-col(flex-start, stretch);
+  padding: var(--space-2);
+  box-shadow: var(--shadow-card);
+  flex-shrink: 0;
+}
+
+.photo-card__frame {
+  width: 100%;
+  height: clamp(200px, 35vh, 280px);
+  border-radius: 1.1rem;
+  background: linear-gradient(140deg, #171b22, #313744);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.photo-card__footer {
+  @include flex-row(space-between, center);
+  padding: var(--space-4) var(--space-2) var(--space-2) var(--space-4);
+}
+
+.photo-card__text {
+  @include flex-col(flex-start, flex-start, 0);
+  line-height: 1.05;
+}
+
+.photo-card__title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.7rem;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.photo-card__title-accent {
+  color: #ff4f5f;
+}
+
+.photo-card__subtext {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
+.photo-card__heart {
+  @include flex-row(center, center);
+  padding-right: var(--space-2);
+  flex-shrink: 0;
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  TOAST NOTIFICATION
+// ════════════════════════════════════════════════════════════
+
+.toast {
+  position: fixed;
+  bottom: max(2.5rem, env(safe-area-inset-bottom, 2rem));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+
+  background: rgba(30, 32, 37, 0.95);
+  @include frosted(16px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--radius-pill);
+  padding: var(--space-3) var(--space-6);
+
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+
+  animation: toast-in 0.3s ease;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  FORM PANEL
+// ════════════════════════════════════════════════════════════
+
+.form-panel {
+  display: grid;
+  gap: var(--space-4);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.agreement {
+  width: 200px;
+  max-width: 200px;
+  margin-inline: auto;
+  text-align: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--color-text-dim);
+  line-height: 1.5;
+}

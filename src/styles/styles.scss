@@ -1,0 +1,28 @@
+// ============================================================
+//  styles.scss  —  Global entry point
+//  Dubai We Love You · Design System v1.0
+//
+//  Import order matters:
+//    1. Abstracts  (tokens, mixins — no output yet)
+//    2. Base       (:root, reset, typography)
+//    3. Layout     (screen shells, topbar)
+//    4. Components (buttons, frames, etc.)
+//    5. Pages      (per-page overrides)
+// ============================================================
+
+// ── 1. Abstracts (compile-time only, zero CSS output) ────────────────────────
+@use 'abstracts/tokens';
+@use 'abstracts/mixins';
+
+// ── 2. Base ──────────────────────────────────────────────────────────────────
+@use 'base/base';
+@use 'base/typography';
+
+// ── 3. Layout ────────────────────────────────────────────────────────────────
+@use 'layout/layout';
+
+// ── 4. Components ────────────────────────────────────────────────────────────
+@use 'components/components';
+
+// ── 5. Pages ─────────────────────────────────────────────────────────────────
+@use 'pages/pages';

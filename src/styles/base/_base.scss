@@ -1,0 +1,179 @@
+// ============================================================
+//  _base.scss  —  CSS reset, :root custom properties, base rules
+//  Dubai We Love You · Design System v1.0
+// ============================================================
+
+@use '../abstracts/tokens' as *;
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+// ── 1. Emit all token maps as CSS custom properties ──────────────────────────
+
+:root {
+
+  // Colors
+  @each $name, $value in $color-map {
+    #{$name}: #{$value};
+  }
+
+  // Typography
+  @each $name, $value in $font-map {
+    #{$name}: #{$value};
+  }
+
+  // Spacing
+  @each $name, $value in $spacing-map {
+    #{$name}: #{$value};
+  }
+
+  // Layout
+  @each $name, $value in $layout-map {
+    #{$name}: #{$value};
+  }
+
+  // Radii
+  @each $name, $value in $radius-map {
+    #{$name}: #{$value};
+  }
+
+  // Shadows
+  @each $name, $value in $shadow-map {
+    #{$name}: #{$value};
+  }
+
+  // Transitions
+  @each $name, $value in $transition-map {
+    #{$name}: #{$value};
+  }
+
+  // Z-index
+  @each $name, $value in $z-map {
+    #{$name}: #{$value};
+  }
+}
+
+
+// ── 2. Minimal Box-Model Reset ───────────────────────────────────────────────
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+// ── 3. HTML & Body ───────────────────────────────────────────────────────────
+
+html {
+  // Prevent iOS font size bump on orientation change
+  -webkit-text-size-adjust: 100%;
+  // Smooth scroll for anchor links
+  scroll-behavior: smooth;
+  // Prevent horizontal overflow on the whole document
+  overflow-x: hidden;
+  // Use dynamic viewport height as the reference unit base
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+
+  // Prevent horizontal scroll on mobile
+  overflow-x: hidden;
+
+  // Sub-pixel rendering
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Better text rendering on mobile
+  text-rendering: optimizeLegibility;
+}
+
+
+// ── 4. Typography Resets ─────────────────────────────────────────────────────
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  // Let container control margin — no default margin
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+
+// ── 5. Angular Router Outlet ─────────────────────────────────────────────────
+//  router-outlet is inline by default and can cause subtle height bugs.
+
+router-outlet {
+  display: none;
+}
+
+// The first sibling after router-outlet holds the active component.
+// Give it full height so it participates in flex/grid correctly.
+router-outlet+* {
+  display: contents; // passes through to the inner .screen element
+}
+
+
+// ── 6. Selection ─────────────────────────────────────────────────────────────
+
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+
+// ── 7. Focus Visible ─────────────────────────────────────────────────────────
+//  Only show focus ring for keyboard navigation (not mouse/touch).
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+
+// ── 8. Scrollbar (WebKit) ────────────────────────────────────────────────────
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

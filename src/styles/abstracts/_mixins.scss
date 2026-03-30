@@ -1,0 +1,228 @@
+// ============================================================
+//  _mixins.scss  —  Reusable SCSS mixins & functions
+//  Dubai We Love You · Design System v1.0
+// ============================================================
+
+
+// ── 1. Breakpoint Mixin ───────────────────────────────────────────────────────
+//  Mobile-first: write base styles, override upward.
+//
+//  Usage:  @include bp(sm)  { ... }
+//          @include bp(md)  { ... }
+//          @include bp(lg)  { ... }
+
+$breakpoints: (
+  xs: 375px,
+  // Small phones (SE, older Android)
+  sm: 390px,
+  // iPhone 12/13/14 standard
+  md: 430px,
+  // iPhone Pro Max / large Android
+  lg: 768px,
+  // Tablet portrait
+  xl: 1024px,
+  // Tablet landscape / small desktop
+);
+
+@mixin bp($size) {
+  $val: map-get($breakpoints, $size);
+
+  @if $val {
+    @media (min-width: #{$val}) {
+      @content;
+    }
+  }
+
+  @else {
+    @warn "Breakpoint `#{$size}` not found in $breakpoints map.";
+  }
+}
+
+// Max-width variant (used rarely — mobile-first avoids this)
+@mixin bp-max($size) {
+  $val: map-get($breakpoints, $size);
+
+  @if $val {
+    @media (max-width: #{calc($val - 1px)}) {
+      @content;
+    }
+  }
+}
+
+// Short-circuit for very small screens (SE, 320px)
+@mixin bp-tiny {
+  @media (max-width: 374px) {
+    @content;
+  }
+}
+
+// Touch device targeting
+@mixin touch {
+  @media (hover: none) and (pointer: coarse) {
+    @content;
+  }
+}
+
+
+// ── 2. Layout Helpers ─────────────────────────────────────────────────────────
+
+// Flex row shorthand
+@mixin flex-row($justify: flex-start, $align: center, $gap: 0) {
+  display: flex;
+  flex-direction: row;
+  justify-content: $justify;
+  align-items: $align;
+
+  @if $gap !=0 {
+    gap: $gap;
+  }
+}
+
+// Flex column shorthand
+@mixin flex-col($justify: flex-start, $align: stretch, $gap: 0) {
+  display: flex;
+  flex-direction: column;
+  justify-content: $justify;
+  align-items: $align;
+
+  @if $gap !=0 {
+    gap: $gap;
+  }
+}
+
+// Absolute full cover (inset: 0)
+@mixin cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// Center content with grid (single cell)
+@mixin grid-center {
+  display: grid;
+  place-items: center;
+}
+
+// Visually hidden (accessible)
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  // overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+// ── 3. Typography Helpers ────────────────────────────────────────────────────
+
+// Uppercase tracking label (used for .step, .count, etc.)
+@mixin label-caps($size: 12px, $spacing: 2.4px, $weight: 700) {
+  font-family: var(--font-heading);
+  font-weight: $weight;
+  font-size: $size;
+  letter-spacing: $spacing;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+// Truncate single line with ellipsis
+@mixin truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+// ── 4. Media / Frame Helpers ─────────────────────────────────────────────────
+
+// Frame container: clips child media to rounded bounds
+@mixin frame-container($w, $h, $radius, $border-color: var(--color-frame-border)) {
+  width: $w;
+  height: $h;
+  border-radius: $radius;
+  border: 2px dashed $border-color;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+// Media fill: image or video that covers its container
+@mixin media-fill($mirror: false) {
+  @include cover;
+  object-fit: cover;
+  border-radius: inherit;
+
+  @if $mirror {
+    transform: scaleX(-1);
+  }
+}
+
+
+// ── 5. Button Helpers ─────────────────────────────────────────────────────────
+
+// Base interactive button reset
+@mixin btn-reset {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+// Scale-down press feedback
+@mixin press-feedback($scale: 0.97) {
+  transition: transform var(--t-fast);
+
+  &:active {
+    transform: scale(#{$scale});
+  }
+}
+
+
+// ── 6. Glass / Blur Surface ──────────────────────────────────────────────────
+
+@mixin glass($bg: var(--color-bg-glass), $border: var(--color-bg-glass-border)) {
+  background: $bg;
+  border: 1px solid $border;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+@mixin frosted($blur: 20px) {
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+}
+
+
+// ── 7. Pulse / Glow Animations ───────────────────────────────────────────────
+
+@mixin glow($color: rgba(255, 79, 95, 0.4), $spread: 45px) {
+  box-shadow: 0 0 #{$spread} #{$color};
+}
+
+
+// ── 8. Touch-Safe Scrolling ───────────────────────────────────────────────────
+
+@mixin scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+}
+
+// ── 9. Safe Area Insets (for notched phones) ─────────────────────────────────
+
+@mixin safe-bottom($extra: 0px) {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + #{$extra});
+}
+
+@mixin safe-top($extra: 0px) {
+  padding-top: calc(env(safe-area-inset-top, 0px) + #{$extra});
+}

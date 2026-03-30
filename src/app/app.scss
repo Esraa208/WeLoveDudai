@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background: #000;
+}
+
+:host ::ng-deep input[type="number"]::-webkit-outer-spin-button,
+:host ::ng-deep input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+:host ::ng-deep input[type="number"] {
+  -moz-appearance: textfield;
+}

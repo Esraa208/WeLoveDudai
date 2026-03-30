@@ -1,0 +1,251 @@
+// ============================================================
+//  _layout.scss  —  Page-level layout patterns & screen shells
+//  Dubai We Love You · Design System v1.0
+// ============================================================
+//
+//  TWO CORE LAYOUT MODES
+//  ─────────────────────
+//  .screen--scroll  →  Content-driven height (welcome/registration)
+//                       - Uses min-height: 100dvh (fills viewport minimum)
+//                       - Scrolls naturally when content overflows
+//                       - Ideal for forms, long content
+//
+//  .screen--fixed   →  Viewport-locked height (selfie, confirmation, lookup, result)
+//                       - Uses height: 100dvh  (never exceeds viewport)
+//                       - overflow: hidden — no scroll ever
+//                       - Flex column with space distribution
+//                       - All children must use flex-shrink: 0 or flex: 1
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+@use '../abstracts/mixins' as *;
+
+
+// ── 1. Shared Screen Shell ───────────────────────────────────────────────────
+//  Applied to every page root element.  Enforces max-width centering
+//  and horizontal padding.  Background is set per-page.
+
+.screen {
+  // Constrain to phone width, centered on wider screens
+  width: min(100%, var(--screen-max-w));
+  margin-inline: auto;
+
+  // Horizontal padding — consistent across all screens
+  padding-inline: var(--screen-px);
+
+  // Vertical padding base — can be overridden per variant
+  padding-block: var(--screen-py);
+
+  // Stack children vertically
+  display: flex;
+  flex-direction: column;
+
+  // Dark base — specific pages override with their gradient
+  background: var(--color-bg-dark);
+
+  // Prevent horizontal bleed
+  overflow-x: hidden;
+
+  // Safe area insets for notched phones
+  padding-top: max(var(--screen-py), env(safe-area-inset-top, var(--screen-py)));
+  padding-bottom: max(var(--screen-py), env(safe-area-inset-bottom, var(--screen-py)));
+}
+
+
+// ── 2. Scroll Mode ───────────────────────────────────────────────────────────
+//  Use when: the page contains a form, list, or content that may grow
+//  beyond the viewport (e.g., welcome/registration).
+
+.screen--scroll {
+  // At minimum, fill the whole viewport — but grow with content
+  min-height: 100dvh;
+
+  // Smooth inertial scroll on iOS
+  @include scrollable;
+
+  // Top-first: content starts at the top and flows down naturally
+  justify-content: flex-start;
+  align-items: stretch;
+
+  // Extra breathing room at the bottom so the CTA doesn't kiss the edge
+  padding-bottom: max(2rem, env(safe-area-inset-bottom, 1.5rem));
+}
+
+
+// ── 3. Fixed Mode ────────────────────────────────────────────────────────────
+//  Use when: the page must fit exactly within the viewport with no scroll.
+//  Children distribute space via Flexbox — nothing can overflow.
+
+.screen--fixed {
+  // Lock to the dynamic viewport height (handles mobile browser chrome)
+  height: 100dvh;
+
+  // flex-start ensures that the header and the top of content-body
+  // are always in the exact same position across different pages.
+  justify-content: flex-start;
+  align-items: center;
+}
+
+
+// ── 4. Fixed Distribution Modifiers ──────────────────────────────────────────
+//  Pair with .screen--fixed to control vertical space distribution.
+
+.screen--evenly {
+  justify-content: space-evenly;
+}
+
+.screen--around {
+  justify-content: space-around;
+}
+
+.screen--centered {
+  justify-content: center;
+}
+
+.screen--start {
+  justify-content: flex-start;
+}
+
+
+// ── 5. Width Variants ────────────────────────────────────────────────────────
+
+.screen--full {
+  width: 100%;
+}
+
+.screen--narrow {
+  width: min(100%, 360px);
+}
+
+
+// ── 6. Background Variants ───────────────────────────────────────────────────
+//  Applied to the page root in addition to .screen
+
+.screen--bg-welcome {
+  background: var(--gradient-welcome);
+}
+
+.screen--bg-result {
+  background: var(--gradient-result);
+}
+
+.screen--bg-lookup {
+  background: var(--gradient-lookup);
+}
+
+.screen--bg-dark {
+  background: var(--color-bg-dark);
+}
+
+
+// ── 7. Content Zones ─────────────────────────────────────────────────────────
+//  Named regions within a .screen--fixed page.
+//  These zones consume available space proportionally.
+
+// ─── .content-body ───
+//  Middle zone — the main visually significant block (frame, illustration, etc.)
+//  Grows to fill leftover space between topbar and bottom-action.
+
+.content-body {
+  // Use flex-start instead of center to ensure the title/step indicator
+  // always starts at the same vertical offset from the top.
+  @include flex-col(flex-start, center, var(--gap-content));
+  width: 100%;
+  flex: 1; // fill remaining height
+  min-height: 0; // allow shrinking (critical in fixed mode)
+}
+
+// ─── .bottom-action ───
+//  Fixed-height zone anchored to the bottom of the screen.
+//  Houses CTA buttons, agreements, etc.
+
+.bottom-action {
+  width: 100%;
+  @include flex-col(flex-end, center, var(--space-4));
+  flex-shrink: 0;
+  
+  // margin-top: 10vh provides a flexible gap relative to screen height
+  margin-top: 10vh; 
+  
+  padding-bottom: max(var(--space-8), env(safe-area-inset-bottom, var(--space-6)));
+}
+
+// ─── .text-block ───
+//  Centered text group (heading + sub-copy)
+
+.text-block {
+  @include flex-col(center, center, var(--space-2));
+  text-align: center;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+
+// ── 8. Topbar ────────────────────────────────────────────────────────────────
+//  Shared across all pages — minimal, ~40–48px, never grows.
+
+.topbar {
+  width: 100%;
+  min-height: var(--topbar-h);
+  @include flex-row(space-between, center);
+  flex-shrink: 0;
+
+  // Consistent bottom margin before page content
+  margin-bottom: var(--space-4);
+}
+
+.topbar--logo-only {
+  justify-content: flex-start;
+}
+
+.topbar--back-only {
+  justify-content: flex-start;
+}
+
+.topbar-logo {
+  width: 96px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.back-link {
+  @include flex-row(flex-start, center);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity var(--t-fast);
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.close-btn {
+  background: transparent;
+  border: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: var(--space-1);
+  transition: opacity var(--t-fast);
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+
+// ── 9. Scroll Guard (Debug helper) ───────────────────────────────────────────
+//  Add .debug-scroll to .screen--fixed to visually catch any overflow.
+//  REMOVE before production.
+
+.debug-scroll {
+  outline: 2px solid red;
+
+  * {
+    outline: 1px solid rgba(255, 0, 0, 0.15);
+  }
+}

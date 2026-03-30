@@ -1,0 +1,160 @@
+// ============================================================
+//  _typography.scss  —  All text utility classes
+//  Dubai We Love You · Design System v1.0
+// ============================================================
+
+@use '../abstracts/mixins' as *;
+
+
+// ── 1. Headings ───────────────────────────────────────────────────────────────
+
+// Main page title (e.g., "Dubai we love you!")
+.t-display {
+  font-family: var(--font-heading);
+  font-size: var(--fs-3xl);
+  font-weight: 800;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  color: var(--color-text-primary);
+}
+
+// Standard page h1 (e.g., "Capture your selfie")
+.t-h1 {
+  font-family: var(--font-heading);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+// Section sub-heading (e.g., "Center your face and smile.")
+.t-h2 {
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: -0.6px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+
+// ── 2. Body Copy ─────────────────────────────────────────────────────────────
+
+// Lead paragraph (first large body text under the hero)
+.t-lead {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-md);
+  line-height: var(--lh-normal);
+  color: var(--color-text-warm);
+}
+
+// Standard body text / hint copy
+.t-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--color-text-warm);
+}
+
+// Small hint / supporting text
+.t-hint {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--color-text-warm);
+  text-align: center;
+}
+
+// Fine print (agreement, disclaimer)
+.t-fine {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  color: var(--color-text-dim);
+  text-align: center;
+}
+
+
+// ── 3. Label / Badge Copy ────────────────────────────────────────────────────
+
+// Step indicator (e.g., "STEP 2 OF 3")
+.t-step {
+  @include label-caps(14px, var(--ls-widest), 600);
+  color: var(--color-accent);
+  text-align: center;
+}
+
+// Stats / live count label (e.g., "1234 PORTRAITS")
+.t-count {
+  @include label-caps(12px, var(--ls-widest), 700);
+  color: var(--color-success);
+  text-align: center;
+  vertical-align: middle;
+}
+
+// Badge text (e.g., "LIVE FROM DUBAI")
+.t-badge {
+  @include label-caps(10px, 1px, 700);
+  color: var(--color-text-primary);
+}
+
+// Button label
+.t-btn {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  line-height: var(--lh-button);
+}
+
+// Small button label (icon-btn labels like RETAKE / CONFIRM)
+.t-btn-sm {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+
+// ── 4. Color Modifiers ───────────────────────────────────────────────────────
+
+.t-accent  { color: var(--color-accent); }
+.t-success { color: var(--color-success); }
+.t-muted   { color: var(--color-text-muted); }
+.t-dim     { color: var(--color-text-dim); }
+.t-error   { color: var(--color-text-error); }
+.t-warm    { color: var(--color-text-warm); }
+
+
+// ── 5. Alignment Modifiers ───────────────────────────────────────────────────
+
+.t-left   { text-align: left; }
+.t-center { text-align: center; }
+.t-right  { text-align: right; }
+
+
+// ── 6. Validation Error ──────────────────────────────────────────────────────
+
+.field-error {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-text-error);
+  margin-top: calc(-1 * var(--space-2));
+  padding-left: var(--space-1);
+  animation: error-in 0.2s ease;
+}
+
+@keyframes error-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
