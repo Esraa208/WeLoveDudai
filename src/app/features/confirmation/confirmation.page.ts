@@ -92,6 +92,7 @@ export class ConfirmationPage {
     formData.append('FullName', registration.fullName || '');
     formData.append('Email', registration.email || '');
     formData.append('Nationality', registration.nationality || '');
+    formData.append('Language', registration.language || '');
     // formData.append('YearsInDubai', (registration.yearsInDubai ?? 0).toString());
 
     try {

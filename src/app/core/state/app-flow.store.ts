@@ -6,6 +6,14 @@ export interface RegistrationData {
   nationality: string;
   email: string;
   // yearsInDubai: number | null;
+  frameFileName?: string;
+  language: string;
+}
+
+export interface CountryData {
+  country: string;
+  fileName: string;
+  language: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -16,6 +24,7 @@ export class AppFlowStore {
     fullName: '',
     nationality: '',
     email: '',
+    language: '',
     // yearsInDubai: null
   });
   readonly registration = this._registration.asReadonly();
@@ -37,6 +46,7 @@ export class AppFlowStore {
       fullName: '',
       nationality: '',
       email: '',
+      language: '',
       // yearsInDubai: null
     });
     this._selfieBase64.set(null);

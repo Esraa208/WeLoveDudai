@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  input,
+  output,
+  signal
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -7,6 +16,7 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule],
   template: `
     <label class="ui-input-label">{{ label() }}</label>
+
     @if (!isSelect()) {
       <input
         class="ui-input"
@@ -16,64 +26,174 @@ import { FormsModule } from '@angular/forms';
         (ngModelChange)="onValueChange($event)"
       />
     } @else {
-      <select class="ui-input ui-select" [ngModel]="value()" (ngModelChange)="onValueChange($event)">
-        <option value="" disabled>{{ placeholder() }}</option>
-        @for (option of options(); track option) {
-          <option [value]="option">{{ option }}</option>
+      <!-- Custom Dropdown -->
+      <div class="custom-select-wrapper">
+        <button
+          type="button"
+          class="ui-input ui-select-trigger"
+          [class.open]="isOpen()"
+          [class.has-value]="!!value()"
+          (click)="toggleDropdown()"
+        >
+          <span class="select-value">
+            {{ value() || placeholder() }}
+          </span>
+          <span class="select-arrow" [class.rotated]="isOpen()">
+            <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="#7a7a7a" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </button>
+
+        @if (isOpen()) {
+          <div class="dropdown-list">
+            @for (option of options(); track option) {
+              <div
+                class="dropdown-item"
+                [class.selected]="option === value()"
+                (click)="selectOption(option)"
+              >
+                {{ option }}
+              </div>
+            }
+          </div>
         }
-      </select>
+      </div>
     }
   `,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
+  styles: [`
+    :host {
+      display: block;
+      position: relative;
+    }
 
-      .ui-input-label {
-        display: block;
-        margin-bottom: 0.45rem;
-        color: #a3a3a3;
-        font-family: var(--font-body);
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 24px;
-        letter-spacing: 0;
-        vertical-align: middle;
-      }
+    .ui-input-label {
+      display: block;
+      margin-bottom: 0.45rem;
+      color: #a3a3a3;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+    }
 
-      .ui-input {
-        width: 100%;
-        height: 64px;
-        border-radius: 12px;
-        border: 0 solid rgba(255, 255, 255, 0.12);
-        background: #353534;
-        color: #E5E2E1;
-        opacity: 1;
-        padding: 20px 24px;
-        font-family: var(--font-body);
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 24px;
-        letter-spacing: 0;
-      }
-      .ui-input::placeholder {
-        color: #525252;
-      }
-      .ui-select {
-        appearance: none;
-        background-image:
-          linear-gradient(45deg, transparent 50%, #7a7a7a 50%),
-          linear-gradient(135deg, #7a7a7a 50%, transparent 50%);
-        background-position:
-          calc(100% - 20px) 30px,
-          calc(100% - 14px) 30px;
-        background-size: 6px 6px, 6px 6px;
-        background-repeat: no-repeat;
-        padding-right: 46px;
-      }
-    `
-  ],
+    .ui-input {
+      width: 100%;
+      height: 64px;
+      border-radius: 12px;
+      border: 0 solid rgba(255, 255, 255, 0.12);
+      background: #353534;
+      color: #E5E2E1;
+      padding: 20px 24px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      box-sizing: border-box;
+    }
+
+    .ui-input::placeholder {
+      color: #525252;
+    }
+
+    /* ── Custom Select ── */
+    .custom-select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .ui-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      text-align: left;
+      outline: none;
+      border: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .ui-select-trigger.open {
+      border-color: rgba(255, 255, 255, 0.2);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .select-value {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #525252; /* placeholder color */
+    }
+
+    .ui-select-trigger.has-value .select-value {
+      color: #E5E2E1; /* selected value color */
+    }
+
+    .select-arrow {
+      flex-shrink: 0;
+      margin-left: 12px;
+      display: flex;
+      align-items: center;
+      transition: transform 0.2s ease;
+    }
+
+    .select-arrow.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* ── Dropdown List ── */
+    .dropdown-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;           /* ← هنا السر: بيلتزم بعرض الـ trigger بالظبط */
+      width: 100%;
+      max-height: 240px;
+      overflow-y: auto;
+      background: #353534;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-top: none;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      z-index: 1000;
+      box-sizing: border-box;
+
+      /* Custom scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: #525252 transparent;
+    }
+
+    .dropdown-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .dropdown-list::-webkit-scrollbar-thumb {
+      background: #525252;
+      border-radius: 4px;
+    }
+
+    .dropdown-item {
+      padding: 14px 24px;
+      color: #E5E2E1;
+      font-family: var(--font-body);
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dropdown-item.selected {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiInputComponent {
@@ -84,6 +204,27 @@ export class UiInputComponent {
   readonly isSelect = input<boolean>(false);
   readonly options = input<string[]>([]);
   readonly valueChange = output<string>();
+
+  isOpen = signal(false);
+
+  private elRef = inject(ElementRef);
+
+  // ← إغلاق الـ dropdown لو click برره
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.elRef.nativeElement.contains(event.target)) {
+      this.isOpen.set(false);
+    }
+  }
+
+  toggleDropdown(): void {
+    this.isOpen.update((v: boolean) => !v);
+  }
+
+  selectOption(option: string): void {
+    this.valueChange.emit(option);
+    this.isOpen.set(false);
+  }
 
   onValueChange(nextValue: string): void {
     this.valueChange.emit(nextValue);

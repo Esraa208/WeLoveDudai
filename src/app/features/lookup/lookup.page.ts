@@ -54,7 +54,7 @@ export class LookupPage implements OnInit {
   private getPortraitCount(): void {
     this.http.get(`${environment.apiUrl}/api/Users/count`).subscribe({
       next: (res: any) => {
-        this.portraitCount.set(res);
+        this.portraitCount.set(res?.usersCount);
       },
       error: (err) => {
         console.error('Error fetching portrait count:', err);

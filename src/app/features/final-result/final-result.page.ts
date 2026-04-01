@@ -15,30 +15,11 @@ import { RouterLink } from '@angular/router';
     </header>
 
     <!-- Photo card -->
-    <div class="photo-card">
-      <div class="photo-card__frame">
-        @if (selfieUrl()) {
-          <img [src]="selfieUrl()!" class="frame__media" alt="Your Dubai portrait" />
-        }
-        <div class="frame__badge">
-          <span class="frame__badge-dot"></span>
-          LIVE FROM DUBAI
-        </div>
-      </div>
-      <div class="photo-card__footer">
-        <div class="photo-card__text">
-          <div class="photo-card__title">
-            I <span class="photo-card__title-accent">LOVE</span>
-          </div>
-          <div class="photo-card__title">DUBAI</div>
-          <div class="photo-card__subtext">AUTHENTIC MOMENT &bull; 2026</div>
-        </div>
-        <div class="photo-card__heart">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
-        </div>
-      </div>
+    <div class="photo-card-wrapper">
+      @if (selfieUrl()) {
+        <img [src]="selfieUrl()!" alt="Your selfie" class="photo-card__selfie" />
+      }
+      <img [src]="registration().frameFileName" alt="Dubai portrait frame" class="photo-card__frame-img" />
     </div>
 
     <!-- Title + subtitle -->
@@ -84,13 +65,51 @@ import { RouterLink } from '@angular/router';
 
   </div>
 `,
-  styles: [],
+  styles: [`
+    .photo-card-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 342px;
+      aspect-ratio: 342 / 456;
+      margin: 0 auto 32px;
+      border-radius: 30px;
+    }
+    .photo-card__frame-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      object-fit: contain;
+    }
+    .photo-card__selfie {
+     // position: absolute;
+    //  top: 3.73%;
+    //  left: 4.97%;
+     // width: 90.06%;
+    //  height: 75%;
+    //  object-fit: cover;
+    //  border-radius: 24px;
+    //  z-index: 5;
+      position: absolute;
+      top: 7.3%;
+      left: 1%;
+      width: 97.6%;
+      height: 70.9%;
+      object-fit: cover;
+      border-radius: 24px;
+      z-index: 5;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinalResultPage {
 
   private readonly appFlowStore = inject(AppFlowStore);
 
+  readonly registration = this.appFlowStore.registration;
   readonly selfieUrl = this.appFlowStore.selfieBase64;
   readonly toast = signal<string | null>(null);
   readonly saving = signal(false);
@@ -104,126 +123,69 @@ export class FinalResultPage {
     const selfieDataUrl = this.selfieUrl();
     if (!selfieDataUrl) throw new Error('No selfie available');
 
-    const selfieImg = await this.loadImage(selfieDataUrl);
+    const frameUrl = this.registration().frameFileName;
+    if (!frameUrl) throw new Error('No frame available');
 
-    // Frame aspect ratio (width / height)
-    const frameAspect = 1.05;
-    const imgAspect = selfieImg.width / selfieImg.height;
+    const [selfieImg, frameImg] = await Promise.all([
+      this.loadImage(selfieDataUrl),
+      this.loadImage(frameUrl)
+    ]);
 
-    // Size the frame to fit the selfie's cropped area — zero upscaling
-    let frameW: number, frameH: number;
-    if (imgAspect > frameAspect) {
-      frameH = selfieImg.height;
-      frameW = Math.round(frameH * frameAspect);
-    } else {
-      frameW = selfieImg.width;
-      frameH = Math.round(frameW / frameAspect);
-    }
-
-    // Scale factor: UI designed at 768px frame width
-    const s = frameW / 768;
-    const pad = Math.round(16 * s);
-    const W = frameW + pad * 2;
-    const cardR = Math.round(48 * s);
-    const frameR = Math.round(36 * s);
-    const footerH = Math.round(150 * s);
-    const H = pad * 2 + frameH + footerH;
+    // Use a high resolution for the output image to ensure crisp quality
+    // Based on the 342 / 456 aspect ratio
+    const W = 1026; 
+    const H = 1368;
 
     const canvas = document.createElement('canvas');
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d')!;
 
-    // 1. Card background
-    ctx.fillStyle = '#25282e';
-    this.drawRoundRect(ctx, 0, 0, W, H, cardR);
-    ctx.fill();
-
-    // 2. Selfie — cover-fit with rounded corners
+    // 1. Clip the whole wrapper to 30px border radius (scaled to 1026px width)
+    const cardR = W * (30 / 342);
     ctx.save();
-    this.drawRoundRect(ctx, pad, pad, frameW, frameH, frameR);
+    this.drawRoundRect(ctx, 0, 0, W, H, cardR);
     ctx.clip();
-    ctx.fillStyle = '#171b22';
-    ctx.fillRect(pad, pad, frameW, frameH);
 
+    // 2. Draw selfie using the exact CSS percentages (left: 1%, top: 7.3%, w: 97.6%, h: 70.9%)
+    const selfieX = W * 0.01;
+    const selfieY = H * 0.073;
+    const selfieW = W * 0.976;
+    const selfieH = H * 0.709;
+    const selfieR = W * (24 / 342);
+
+    ctx.save();
+    this.drawRoundRect(ctx, selfieX, selfieY, selfieW, selfieH, selfieR);
+    ctx.clip();
+
+    // object-fit: cover for the selfie
+    const imgAspect = selfieImg.width / selfieImg.height;
+    const targetAspect = selfieW / selfieH;
     let sx = 0, sy = 0, sw = selfieImg.width, sh = selfieImg.height;
-    if (imgAspect > frameAspect) {
-      sw = selfieImg.height * frameAspect;
+    if (imgAspect > targetAspect) {
+      sw = selfieImg.height * targetAspect;
       sx = (selfieImg.width - sw) / 2;
     } else {
-      sh = selfieImg.width / frameAspect;
+      sh = selfieImg.width / targetAspect;
       sy = (selfieImg.height - sh) / 2;
     }
-    ctx.drawImage(selfieImg, sx, sy, sw, sh, pad, pad, frameW, frameH);
+    ctx.drawImage(selfieImg, sx, sy, sw, sh, selfieX, selfieY, selfieW, selfieH);
     ctx.restore();
 
-    // 3. "LIVE FROM DUBAI" badge
-    const badgeFontSize = Math.round(18 * s);
-    const badgeX = pad + Math.round(24 * s);
-    const badgeY = pad + Math.round(24 * s);
-    const badgeText = 'LIVE FROM DUBAI';
-    ctx.font = `bold ${badgeFontSize}px Epilogue, sans-serif`;
-    ctx.textBaseline = 'middle';
-    const btw = ctx.measureText(badgeText).width;
-    const dotSize = Math.round(10 * s);
-    const badgePadX = Math.round(24 * s);
-    const badgePadY = Math.round(12 * s);
-    const bGap = Math.round(12 * s);
-    const badgeW = badgePadX + dotSize + bGap + btw + badgePadX;
-    const badgeH = badgePadY * 2 + badgeFontSize;
+    // 3. Draw the frame PNG image overlay
+    // matching CSS: top: 0, left: 0, width: 100%, height: 100%, object-fit: contain
+    const frameImgAspect = frameImg.width / frameImg.height;
+    const canvasAspect = W / H;
+    let fx = 0, fy = 0, fw = W, fh = H;
+    if (frameImgAspect > canvasAspect) {
+      fh = W / frameImgAspect;
+      fy = (H - fh) / 2;
+    } else {
+      fw = H * frameImgAspect;
+      fx = (W - fw) / 2;
+    }
+    ctx.drawImage(frameImg, fx, fy, fw, fh);
 
-    ctx.fillStyle = 'rgba(57, 57, 57, 0.75)';
-    this.drawRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, badgeH / 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#FFB3B0';
-    ctx.beginPath();
-    ctx.arc(badgeX + badgePadX + dotSize / 2, badgeY + badgeH / 2, dotSize / 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(badgeText, badgeX + badgePadX + dotSize + bGap, badgeY + badgeH / 2 + 1);
-
-    // 4. Footer — "I LOVE DUBAI"
-    const textX = pad + Math.round(20 * s);
-    const footerTop = pad + frameH + Math.round(24 * s);
-    const titleFontSize = Math.round(52 * s);
-    const subtextFontSize = Math.round(17 * s);
-
-    ctx.font = `900 ${titleFontSize}px Epilogue, sans-serif`;
-    ctx.textBaseline = 'top';
-    ctx.fillStyle = '#FFFFFF';
-    const iW = ctx.measureText('I ').width;
-    ctx.fillText('I ', textX, footerTop);
-
-    ctx.fillStyle = '#ff4f5f';
-    ctx.fillText('LOVE', textX + iW, footerTop);
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillText('DUBAI', textX, footerTop + Math.round(54 * s));
-
-    ctx.font = `600 ${subtextFontSize}px Manrope, sans-serif`;
-    ctx.fillStyle = '#AC8886';
-    ctx.fillText('AUTHENTIC MOMENT \u2022 2026', textX, footerTop + Math.round(116 * s));
-
-    // 5. Heart icon (right side)
-    ctx.save();
-    ctx.fillStyle = '#FFFFFF';
-    ctx.shadowColor = 'rgba(255,255,255,0.8)';
-    ctx.shadowBlur = Math.round(12 * s);
-    const heartScale = 2.2 * s;
-    const heartX = W - pad - Math.round(70 * s);
-    const heartY = footerTop + Math.round(28 * s);
-    ctx.translate(heartX, heartY);
-    ctx.scale(heartScale, heartScale);
-    const heartPath = new Path2D(
-      'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 ' +
-      '2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09' +
-      'C13.09 3.81 14.76 3 16.5 3 ' +
-      '19.58 3 22 5.42 22 8.5' +
-      'c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
-    );
-    ctx.fill(heartPath);
     ctx.restore();
 
     return new Promise<Blob>((resolve, reject) => {
