@@ -158,7 +158,7 @@
   // @include flex-row(space-between, flex-end);
   @include flex-row(space-between, center);
   // margin-top: 10vh;
-  padding-bottom: max(var(--space-4), env(safe-area-inset-bottom, var(--space-3)));
+  padding-bottom: max(var(--space-2), env(safe-area-inset-bottom, var(--space-3)));
   flex-shrink: 0;
 }
 

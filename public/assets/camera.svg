@@ -1,29 +1,5 @@
-<svg width="160" height="161" viewBox="0 0 160 161" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g opacity="0.2" filter="url(#filter0_f_6_1553)">
-<rect x="40" y="40" width="80" height="80" rx="40" fill="#FF5357"/>
-</g>
-<rect x="40" y="40" width="80" height="80" rx="40" fill="#FF5357"/>
-<g filter="url(#filter1_d_6_1553)">
-<rect x="40" y="40" width="80" height="80" rx="40" fill="white" fill-opacity="0.01" shape-rendering="crispEdges"/>
-</g>
-<rect x="45" y="45" width="70" height="70" rx="35" stroke="#5C000C" stroke-opacity="0.2" stroke-width="2"/>
-<path d="M80 88.25C81.875 88.25 83.4688 87.5938 84.7812 86.2812C86.0938 84.9688 86.75 83.375 86.75 81.5C86.75 79.625 86.0938 78.0312 84.7812 76.7188C83.4688 75.4062 81.875 74.75 80 74.75C78.125 74.75 76.5312 75.4062 75.2188 76.7188C73.9062 78.0312 73.25 79.625 73.25 81.5C73.25 83.375 73.9062 84.9688 75.2188 86.2812C76.5312 87.5938 78.125 88.25 80 88.25ZM80 85.25C78.95 85.25 78.0625 84.8875 77.3375 84.1625C76.6125 83.4375 76.25 82.55 76.25 81.5C76.25 80.45 76.6125 79.5625 77.3375 78.8375C78.0625 78.1125 78.95 77.75 80 77.75C81.05 77.75 81.9375 78.1125 82.6625 78.8375C83.3875 79.5625 83.75 80.45 83.75 81.5C83.75 82.55 83.3875 83.4375 82.6625 84.1625C81.9375 84.8875 81.05 85.25 80 85.25ZM68 93.5C67.175 93.5 66.4688 93.2062 65.8813 92.6187C65.2938 92.0312 65 91.325 65 90.5V72.5C65 71.675 65.2938 70.9688 65.8813 70.3812C66.4688 69.7937 67.175 69.5 68 69.5H72.725L75.5 66.5H84.5L87.275 69.5H92C92.825 69.5 93.5312 69.7937 94.1187 70.3812C94.7062 70.9688 95 71.675 95 72.5V90.5C95 91.325 94.7062 92.0312 94.1187 92.6187C93.5312 93.2062 92.825 93.5 92 93.5H68Z" fill="#410006"/>
-<defs>
-<filter id="filter0_f_6_1553" x="0" y="0" width="160" height="160" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feGaussianBlur stdDeviation="20" result="effect1_foregroundBlur_6_1553"/>
-</filter>
-<filter id="filter1_d_6_1553" x="2" y="27" width="156" height="156" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feMorphology radius="12" operator="erode" in="SourceAlpha" result="effect1_dropShadow_6_1553"/>
-<feOffset dy="25"/>
-<feGaussianBlur stdDeviation="25"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_6_1553"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_6_1553" result="shape"/>
-</filter>
-</defs>
+<svg width="80" height="80" viewBox="40 40 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="40" y="40" width="80" height="80" rx="40" fill="#FF5357"/>
+  <rect x="45" y="45" width="70" height="70" rx="35" stroke="#5C000C" stroke-opacity="0.2" stroke-width="2"/>
+  <path d="M80 88.25C81.875 88.25 83.4688 87.5938 84.7812 86.2812C86.0938 84.9688 86.75 83.375 86.75 81.5C86.75 79.625 86.0938 78.0312 84.7812 76.7188C83.4688 75.4062 81.875 74.75 80 74.75C78.125 74.75 76.5312 75.4062 75.2188 76.7188C73.9062 78.0312 73.25 79.625 73.25 81.5C73.25 83.375 73.9062 84.9688 75.2188 86.2812C76.5312 87.5938 78.125 88.25 80 88.25ZM80 85.25C78.95 85.25 78.0625 84.8875 77.3375 84.1625C76.6125 83.4375 76.25 82.55 76.25 81.5C76.25 80.45 76.6125 79.5625 77.3375 78.8375C78.0625 78.1125 78.95 77.75 80 77.75C81.05 77.75 81.9375 78.1125 82.6625 78.8375C83.3875 79.5625 83.75 80.45 83.75 81.5C83.75 82.55 83.3875 83.4375 82.6625 84.1625C81.9375 84.8875 81.05 85.25 80 85.25ZM68 93.5C67.175 93.5 66.4688 93.2062 65.8813 92.6187C65.2938 92.0312 65 91.325 65 90.5V72.5C65 71.675 65.2938 70.9688 65.8813 70.3812C66.4688 69.7937 67.175 69.5 68 69.5H72.725L75.5 66.5H84.5L87.275 69.5H92C92.825 69.5 93.5312 69.7937 94.1187 70.3812C94.7062 70.9688 95 71.675 95 72.5V90.5C95 91.325 94.7062 92.0312 94.1187 92.6187C93.5312 93.2062 92.825 93.5 92 93.5H68Z" fill="#410006"/>
 </svg>
