@@ -17,7 +17,7 @@ import { environment } from '../../../environments/environment';
       <button type="button" class="menu-btn" aria-label="menu"></button>
     </header>
 
-    <h1>DUBAI,<br />We love Dubai</h1>
+    <h1>We love Dubai</h1>
 
     <p class="t-lead">
       Share your portrait and become part of the living heart of the city.

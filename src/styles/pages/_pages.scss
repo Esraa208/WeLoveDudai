@@ -37,11 +37,12 @@
 
   // Display-size h1 (different from default .t-h1)
   >h1 {
-    font-size: var(--fs-3xl);
+    font-size: var(--fs-2xl);
     font-weight: 700;
-    line-height: var(--lh-tight);
+    // line-height: var(--lh-tight);
     letter-spacing: var(--ls-tight);
     color: var(--color-text-primary);
+    text-transform: uppercase;
     // Not centered — left-aligned intentionally
   }
 
