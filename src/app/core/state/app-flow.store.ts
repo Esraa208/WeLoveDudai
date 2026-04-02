@@ -1,5 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
-import { EMPTY } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 
 export interface RegistrationData {
   fullName: string;
@@ -40,6 +39,11 @@ export class AppFlowStore {
   readonly submitting = this._submitting.asReadonly();
   setSubmitting(value: boolean): void { this._submitting.set(value); }
 
+  // ── Successful submission flag ────────────────────────────────────────────
+  private readonly _isSubmitted = signal(false);
+  readonly isSubmitted = this._isSubmitted.asReadonly();
+  setIsSubmitted(value: boolean): void { this._isSubmitted.set(value); }
+
   // ── Full reset ────────────────────────────────────────────────────────────
   reset(): void {
     this._registration.set({
@@ -51,5 +55,16 @@ export class AppFlowStore {
     });
     this._selfieBase64.set(null);
     this._submitting.set(false);
+    this._isSubmitted.set(false);
+  }
+
+  validateRegistration(): boolean {
+    const registration = this._registration();
+    return (
+      registration.fullName.trim().length > 0 &&
+      registration.email.trim().length > 0 &&
+      registration.nationality.trim().length > 0 &&
+      registration.language.trim().length > 0
+    );
   }
 }

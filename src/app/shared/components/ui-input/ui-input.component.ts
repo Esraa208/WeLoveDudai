@@ -6,7 +6,8 @@ import {
   inject,
   input,
   output,
-  signal
+  signal,
+  computed
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -47,7 +48,16 @@ import { FormsModule } from '@angular/forms';
 
         @if (isOpen()) {
           <div class="dropdown-list">
-            @for (option of options(); track option) {
+            <div class="dropdown-search-wrapper" (click)="$event.stopPropagation()">
+              <input 
+                type="text" 
+                class="dropdown-search-input" 
+                placeholder="Search..." 
+                [ngModel]="searchQuery()" 
+                (ngModelChange)="searchQuery.set($event)"
+              />
+            </div>
+            @for (option of filteredOptions(); track option) {
               <div
                 class="dropdown-item"
                 [class.selected]="option === value()"
@@ -55,6 +65,9 @@ import { FormsModule } from '@angular/forms';
               >
                 {{ option }}
               </div>
+            }
+            @if (filteredOptions().length === 0) {
+              <div class="dropdown-no-results">No results found</div>
             }
           </div>
         }
@@ -165,6 +178,46 @@ import { FormsModule } from '@angular/forms';
       scrollbar-color: #525252 transparent;
     }
 
+    .dropdown-search-wrapper {
+      padding: 12px;
+      position: sticky;
+      top: 0;
+      background: #353534;
+      z-index: 2;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-search-input {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #2a2a29;
+      color: #E5E2E1;
+      padding: 8px 16px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .dropdown-search-input:focus {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .dropdown-search-input::placeholder {
+      color: #7a7a7a;
+    }
+
+    .dropdown-no-results {
+      padding: 14px 24px;
+      color: #7a7a7a;
+      font-family: var(--font-body);
+      font-size: 14px;
+      text-align: center;
+    }
+
     .dropdown-list::-webkit-scrollbar {
       width: 4px;
     }
@@ -206,6 +259,15 @@ export class UiInputComponent {
   readonly valueChange = output<string>();
 
   isOpen = signal(false);
+  searchQuery = signal('');
+
+  readonly filteredOptions = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    if (!query) {
+      return this.options();
+    }
+    return this.options().filter(option => option.toLowerCase().includes(query));
+  });
 
   private elRef = inject(ElementRef);
 
@@ -214,16 +276,24 @@ export class UiInputComponent {
   onDocumentClick(event: MouseEvent): void {
     if (!this.elRef.nativeElement.contains(event.target)) {
       this.isOpen.set(false);
+      this.searchQuery.set('');
     }
   }
 
   toggleDropdown(): void {
-    this.isOpen.update((v: boolean) => !v);
+    this.isOpen.update((v: boolean) => {
+      const next = !v;
+      if (!next) {
+        this.searchQuery.set('');
+      }
+      return next;
+    });
   }
 
   selectOption(option: string): void {
     this.valueChange.emit(option);
     this.isOpen.set(false);
+    this.searchQuery.set('');
   }
 
   onValueChange(nextValue: string): void {

@@ -8,9 +8,9 @@ import { environment } from '../../../environments/environment';
  */
 export const corsProxyInterceptor: HttpInterceptorFn = (req, next) => {
   const targetBase = 'https://testapi.shipsync.it.com';
-  
+
   // Skip proxy rewriting in production or if URL doesn't match
-  if (environment.production || !req.url.startsWith(targetBase)) {
+  if (environment.apiUrl || !req.url.startsWith(targetBase)) {
     return next(req);
   }
 

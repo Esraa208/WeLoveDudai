@@ -426,6 +426,8 @@ export class WelcomeRegistrationPage {
   }
 
   ngOnInit(): void {
+    // Reset any previous state from the final result page when returning here
+    this.appFlowStore.reset();
     this.getPortraitCount();
   }
 }

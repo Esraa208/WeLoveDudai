@@ -42,11 +42,13 @@ import { environment } from '../../../environments/environment';
       <button
         class="action-btn action-btn--constrained"
         [class.loading]="submitting()"
-        [disabled]="submitting()"
+        [disabled]="submitting() || appFlowStore.isSubmitted()"
         (click)="submit()"
       >
         @if (submitting()) {
           <span class="spinner"></span> Submitting…
+        } @else if (appFlowStore.isSubmitted()) {
+          Submitted 
         } @else {
           Submit
         }
@@ -64,7 +66,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ConfirmationPage {
   private readonly http = inject(HttpClient);
-  private readonly appFlowStore = inject(AppFlowStore);
+  readonly appFlowStore = inject(AppFlowStore);
   private readonly router = inject(Router);
   readonly toast = signal<string | null>(null);
 
@@ -75,6 +77,11 @@ export class ConfirmationPage {
   readonly submitting = this.appFlowStore.submitting;   // signal<boolean>
 
   submit(): void {
+    if (this.appFlowStore.isSubmitted()) {
+      this.router.navigate(['/lookup']);
+      return;
+    }
+
     const registration = this.appFlowStore.registration();
     const selfieBase64 = this.appFlowStore.selfieBase64();
 
@@ -105,13 +112,29 @@ export class ConfirmationPage {
       this.http.post(`${environment.apiUrl}/api/Users`, formData).subscribe({
         next: (res) => {
           this.appFlowStore.setSubmitting(false);
+          this.appFlowStore.setIsSubmitted(true);
           this.router.navigate(['/lookup']);
         },
         error: (err) => {
           console.error('Upload failed:', err);
           this.appFlowStore.setSubmitting(false);
-          // this.router.navigate(['/lookup']);
-          this.showToast('Back to complete the form.');
+
+          // Show message depending on status error
+          let errorMessage = 'An unexpected error occurred.';
+
+          if (err.status === 0) {
+            errorMessage = 'An unexpected error occurred.';
+          } else if (err.status === 400) {
+            errorMessage = 'Back to complete the form.'; // err.error?.message || 'Bad Request (400): Invalid data submitted.';
+          } else if (err.status === 404) {
+            errorMessage = 'Not Found (404): The API endpoint was not found.';
+          } else if (err.status === 500) {
+            errorMessage = `Internal Server Error (${err.status}): There is a problem with the backend API.`;
+          } else if (err.status > 0) {
+            errorMessage = `Error ${err.status}: ${err.statusText}`;
+          }
+
+          this.showToast(errorMessage);
         }
       });
     } catch (error) {
