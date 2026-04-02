@@ -28,9 +28,9 @@ $color-map: (
   --gradient-progress: linear-gradient(90deg, #ff5357 0%, #23a646 100%),
 
   // Accents
-  --color-accent: #ff5357,
-  --color-accent-glow: rgba(255, 83, 87, 0.30),
-  --color-accent-shadow: rgba(255, 83, 87, 0.40),
+  --color-accent: #ff0000,
+  --color-accent-glow: rgba(255, 0, 0, 0.30),
+  --color-accent-shadow: rgba(255, 0, 0, 0.40),
   --color-accent-muted: #ffb3b0,
   --color-success: #65df76,
   --color-success-alt: #27c75f,
@@ -55,8 +55,8 @@ $color-map: (
 
 $font-map: (
   // Families (override in global styles if custom fonts differ)
-  --font-heading: "'Epilogue', sans-serif",
-  --font-body: "'Manrope', sans-serif",
+  --font-heading: "'Acumin Variable Condensed', sans-serif",
+  --font-body: "'Suisse Intl', sans-serif",
 
   // Scale — fluid using clamp(min, preferred, max)
   --fs-xs: clamp(10px, 1.4vw, 11px),

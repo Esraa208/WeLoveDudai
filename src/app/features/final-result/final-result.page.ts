@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
   <div class="screen screen--fixed screen--bg-result result-screen">
 
     <header class="topbar">
-      <img src="/assets/topbar-logo.svg" alt="We Love You" class="topbar-logo" />
+      <img src="/assets/logo.png" alt="We Love You" class="topbar-logo" />
       <button type="button" class="close-btn" routerLink="/welcome" aria-label="close">&times;</button>
     </header>
 
@@ -133,7 +133,7 @@ export class FinalResultPage {
 
     // Use a high resolution for the output image to ensure crisp quality
     // Based on the 342 / 456 aspect ratio
-    const W = 1026; 
+    const W = 1026;
     const H = 1368;
 
     const canvas = document.createElement('canvas');

@@ -13,11 +13,11 @@ import { environment } from '../../../environments/environment';
   <div class="screen screen--scroll screen--bg-welcome welcome-screen">
 
     <header class="topbar">
-      <img src="/assets/topbar-logo.svg" alt="We Love You" class="topbar-logo" />
+      <img src="/assets/logo.png" alt="We Love You" class="topbar-logo" />
       <button type="button" class="menu-btn" aria-label="menu"></button>
     </header>
 
-    <h1>Dubai we<br />love you !</h1>
+    <h1>DUBAI,<br />We love Dubai</h1>
 
     <p class="t-lead">
       Share your portrait and become part of the living heart of the city.

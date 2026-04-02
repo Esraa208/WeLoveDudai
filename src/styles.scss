@@ -1,12 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
+@font-face {
+  font-family: 'Acumin Variable Condensed';
+  src: url('/assets/fonts/AcuminProCond-Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Suisse Intl';
+  src: url('/assets/fonts/SuisseIntl/SuisseIntl-Regular.otf') format('opentype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Suisse Intl';
+  src: url('/assets/fonts/SuisseIntl/SuisseIntl-Semibold.otf') format('opentype');
+  font-weight: 600;
+}
+
 :root {
   color-scheme: dark;
   --bg-black: #000000;
   --bg-charcoal: #121212;
-  --accent-neon-red: #ff4d4d;
-  --font-heading: 'Epilogue', sans-serif;
-  --font-body: 'Manrope', sans-serif;
+  --accent-neon-red: #ff0000;
+  --font-heading: 'Acumin Variable Condensed', sans-serif;
+  --font-body: 'Suisse Intl', sans-serif;
 }
 
 *,
@@ -41,4 +59,8 @@ button,
 a,
 span {
   font-family: var(--font-body);
+}
+
+p {
+  color: #ffffff;
 }

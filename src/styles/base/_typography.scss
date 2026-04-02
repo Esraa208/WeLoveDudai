@@ -43,13 +43,12 @@
 
 // ── 2. Body Copy ─────────────────────────────────────────────────────────────
 
-// Lead paragraph (first large body text under the hero)
 .t-lead {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: var(--fs-md);
   line-height: var(--lh-normal);
-  color: var(--color-text-warm);
+  color: var(--color-text-primary);
 }
 
 // Standard body text / hint copy
@@ -58,7 +57,7 @@
   font-weight: 400;
   font-size: var(--fs-base);
   line-height: var(--lh-normal);
-  color: var(--color-text-warm);
+  color: var(--color-text-primary);
 }
 
 // Small hint / supporting text
@@ -107,7 +106,7 @@
 
 // Button label
 .t-btn {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-weight: 900;
   font-size: 18px;
   letter-spacing: var(--ls-wider);
@@ -127,19 +126,44 @@
 
 // ── 4. Color Modifiers ───────────────────────────────────────────────────────
 
-.t-accent  { color: var(--color-accent); }
-.t-success { color: var(--color-success); }
-.t-muted   { color: var(--color-text-muted); }
-.t-dim     { color: var(--color-text-dim); }
-.t-error   { color: var(--color-text-error); }
-.t-warm    { color: var(--color-text-warm); }
+.t-accent {
+  color: var(--color-accent);
+}
+
+.t-success {
+  color: var(--color-success);
+}
+
+.t-muted {
+  color: var(--color-text-muted);
+}
+
+.t-dim {
+  color: var(--color-text-dim);
+}
+
+.t-error {
+  color: var(--color-text-error);
+}
+
+.t-warm {
+  color: var(--color-text-warm);
+}
 
 
 // ── 5. Alignment Modifiers ───────────────────────────────────────────────────
 
-.t-left   { text-align: left; }
-.t-center { text-align: center; }
-.t-right  { text-align: right; }
+.t-left {
+  text-align: left;
+}
+
+.t-center {
+  text-align: center;
+}
+
+.t-right {
+  text-align: right;
+}
 
 
 // ── 6. Validation Error ──────────────────────────────────────────────────────
@@ -155,6 +179,13 @@
 }
 
 @keyframes error-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

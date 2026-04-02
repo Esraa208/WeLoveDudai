@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment';
     <div class="screen screen--fixed screen--bg-lookup lookup-screen">
 
       <header class="topbar topbar--logo-only">
-        <img src="/assets/topbar-logo.svg" alt="We Love You" class="topbar-logo" />
+        <img src="/assets/logo.png" alt="We Love You" class="topbar-logo" />
       </header>
 
       <!-- Animated centre element -->
